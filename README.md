@@ -1,7 +1,7 @@
 DPimport: A command line glob importer for DPdash
 =================================================
 DPimport is a command line tool for importing files into DPdash using a
-simple [`glob`](https://en.wikipedia.org/wiki/Glob_(programming) expression.
+simple [`glob`](https://en.wikipedia.org/wiki/Glob_(programming)) expression.
 
 ## Table of contents
 1. [Installation](#installation)
