@@ -70,7 +70,7 @@ def init_datafile(info):
         SUBJECT=info['subject'],
         ASSESSMENT=info['assessment']
     )
-    hash = hashlib.sha256(string)
+    hash = hashlib.sha256(string.encode('utf-8'))
     return {
         'collection': hash.hexdigest(),
         'subject' : info['subject'],

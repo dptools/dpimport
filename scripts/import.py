@@ -105,7 +105,7 @@ def clean_metadata(db, max_days):
 
         studies[subject['_id']['study']]['subject'].append(subject_metadata)
 
-    for study, subject in studies.iteritems():
+    for study, subject in iter(studies.items()):
         bulk_metadata = db.metadata.initialize_ordered_bulk_op()
         bulk_metadata.find({'study' : study}).upsert().update({'$set' :
             {
