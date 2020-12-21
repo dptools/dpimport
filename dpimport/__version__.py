@@ -1,0 +1,6 @@
+__title__ = 'dpimport'
+__description__ = 'DPdash importer'
+__url__ = 'https://github.com/harvard-nrg/dpimport'
+__version__ = '0.0.1'
+__author__ = 'Neuroinformatics Research Group'
+__author_email__ = 'info@neuroinfo.org'
