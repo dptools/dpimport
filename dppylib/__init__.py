@@ -5,7 +5,7 @@ import hashlib
 import uuid
 import mimetypes as mt
 from datetime import datetime
-from urllib import quote
+from urllib.parse import quote
 
 from tools import database as dbtools
 from tools import reader
@@ -164,14 +164,14 @@ def sanitize_columns(columns):
 def match_file(file_name, sub_dir):
     matched_file = FILE_REGEX.match(file_name)
     if not matched_file:
-	logger.info('file did not match %s', file_name)
+        logger.info('file did not match %s', file_name)
         matched_metadata = METADATA_REGEX.match(file_name)
         if not matched_metadata:
             return None
         else:
             return scan_metadata(matched_metadata, file_name, sub_dir)
     else:
-	logger.info('file matched %s', file_name)
+        logger.info('file matched %s', file_name)
         return scan_data(matched_file, file_name, sub_dir)
 
 # Return file_info for the metadata
