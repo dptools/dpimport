@@ -155,7 +155,7 @@ def insert_data(db, file_info):
 def sanitize_columns(columns):
     new_columns = []
     for column in columns:
-        new_column = quote(unicode(column).encode('utf-8'), safe='~()*!.\'').replace('.', '%2E')
+        new_column = quote(str(column).encode('utf-8'), safe='~()*!.\'').replace('.', '%2E')
         new_columns.append(new_column)
 
     return new_columns
