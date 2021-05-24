@@ -12,6 +12,8 @@ import argparse as ap
 import collections as col
 import dpimport.importer as importer
 from dpimport.database import Database
+from pymongo import DeleteMany, UpdateMany
+from pymongo.errors import BulkWriteError
 
 logger = logging.getLogger(__name__)
 
@@ -106,20 +108,18 @@ def clean_metadata(db, max_days):
         studies[subject['_id']['study']]['subject'].append(subject_metadata)
 
     for study, subject in iter(studies.items()):
-        bulk_metadata = db.metadata.initialize_ordered_bulk_op()
-        bulk_metadata.find({'study' : study}).upsert().update({'$set' :
+        bulk_metadata = []
+        bulk_metadata = bulk_metadata + [UpdateMany({'study' : study}, {'$set' :
             {
                 'synced' : True,
                 'subjects' : studies[study]['subject'],
                 'days' : studies[study]['max_day']
             }
-        })
-
-        bulk_metadata.find({'study' : study, 'synced' : False}).remove()
-        bulk_metadata.find({'study' : study }).update({'$set' : {'synced' : False}})
-
+        }, upsert=True)]
+        bulk_metadata = bulk_metadata + [DeleteMany({'study' : study, 'synced' : False})]
+        bulk_metadata = bulk_metadata + [UpdateMany({'study' : study }, {'$set' : {'synced' : False}})]
         try:
-            bulk_metadata.execute()
+            db.metadata.bulk_write(bulk_metadata)
         except BulkWriteError as e:
             logger.error(e)
 
@@ -161,14 +161,9 @@ def clean_toc(db):
             }
         )
 
-    bulk = db.toc.initialize_ordered_bulk_op()
-    bulk.find(
-        {
-            'synced' : False
-        }
-    ).remove()
+    bulk = [DeleteMany({ 'synced' : False })]
     try:
-        bulk.execute()
+        db.toc.bulk_write(bulk)
     except BulkWriteError as e:
         logger.error(e)
 
@@ -192,15 +187,9 @@ def clean_toc_study(db, study):
             }
         )
 
-    bulk = db.toc.initialize_ordered_bulk_op()
-    bulk.find(
-        {
-            'study' : study,
-            'synced' : False
-        }
-    ).remove()
+    bulk = [DeleteMany({ 'study' : study, 'synced' : False })]
     try:
-        bulk.execute()
+        db.toc.bulk_write(bulk)
     except BulkWriteError as e:
         logger.error(e)
 
