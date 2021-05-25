@@ -36,7 +36,7 @@ def main():
     db = Database(config, args.dbname).connect()
 
     # iterate over matching files on the filesystem
-    for f in glob.iglob(args.expr):
+    for f in glob.iglob(args.expr, recursive=True):
         dirname = os.path.dirname(f)
         basename = os.path.basename(f)
         # probe for dpdash-compatibility and gather information
