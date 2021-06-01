@@ -43,7 +43,7 @@ import.py -c config.yml '/PHOENIX/GENERAL/**/processed/*.csv'
 
 and so on.
 
-<detail>
+<details>
 <summary>More information on **</summary>
 
 `directory/*/*.csv` matches only `directory/[subdirectory]/[filename].csv`. With a [recursive glob pattern](https://docs.python.org/3/library/glob.html#glob.glob), `directory/**/*.csv` will additionally match:
@@ -53,4 +53,4 @@ and so on.
 
 and so on, for as many levels deep as exist in the directory tree.
 
-</detail>
+</details>
