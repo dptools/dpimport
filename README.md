@@ -29,3 +29,28 @@ or a glob expression (use single quotes to avoid shell expansion)
 import.py -c config.yml '/PHOENIX/GENERAL/STUDY_A/SUB_001/DATA_TYPE/processed/*.csv'
 ```
 
+You may also now use the `**` recursive glob expression, for example:
+
+```bash
+import.py -c config.yml '/PHOENIX/**/*.csv'
+```
+
+or
+
+```bash
+import.py -c config.yml '/PHOENIX/GENERAL/**/processed/*.csv'
+```
+
+and so on.
+
+<detail>
+<summary>More information on **</summary>
+
+`directory/*/*.csv` matches only `directory/[subdirectory]/[filename].csv`. With a [recursive glob pattern](https://docs.python.org/3/library/glob.html#glob.glob), `directory/**/*.csv` will additionally match:
+
+* `directory/[filename].csv` (no subdirectory)
+* `directory/[subdirectory1]/[subdirectory2]/[filename].csv` (sub-subdirectory)
+
+and so on, for as many levels deep as exist in the directory tree.
+
+</detail>
