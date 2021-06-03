@@ -6,6 +6,7 @@ simple [`glob`](https://en.wikipedia.org/wiki/Glob_(programming)) expression.
 ## Table of contents
 1. [Installation](#installation)
 2. [Configuration](#configuration)
+   - [MongoDB](#mongodb)
 3. [Usage](#usage)
 
 ## Installation
@@ -16,9 +17,18 @@ pip install git+https://github.com/harvard-nrg/dpimport
 ```
 
 ## Configuration
-DPimport requires a configuration file `-c|--config` for establishing a database 
+DPimport requires a configuration file in YAML format, passed as a command
+line argument with `-c|--config`, for establishing a MongoDB database 
 connection. You will find an example configuration file in the `examples` 
 directory within this repository.
+
+### MongoDB
+
+This tool requires MongoDB to be running and accessible with the credentials you
+supply in the YAML config file.
+
+For tips on MongoDB as it is used in DPdash and DPimport, see 
+[the DPdash wiki](https://github.com/PREDICT-DPACC/dpdash/wiki/MongoDB-Tips).
 
 ## Usage
 The main command line tool is `import.py`. You can use this tool to import any
