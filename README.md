@@ -55,6 +55,7 @@ and so on.
 
 <details>
 <summary>Details about the pattern /**/</summary>
+<br>
 
 `directory/*/*.csv` matches only `directory/[subdirectory]/[filename].csv`. With a [recursive glob pattern](https://docs.python.org/3/library/glob.html#glob.glob), `directory/**/*.csv` will additionally match:
 
