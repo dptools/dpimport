@@ -149,11 +149,9 @@ def insert_data(db, file_info):
                 chunk['path'] = file_info['path']
                 if 'day' in chunk: 
                     chunk_day = int(chunk['day'])
-                    # Add to data blob if there is no existing day range for this collection
-                    if min_day_found is None or max_day_found is None:
-                        data_blob.extend(chunk.to_dict('records'))
-                    # Add to data blob if this day not in existing range
-                    elif (chunk_day < min_day) or (chunk_day > max_day):
+                    # Add to data blob if there is no existing day range for this collection,
+                    # or if this day is not in the existing range
+                    if min_day_found is None or max_day_found is None or (chunk_day < min_day) or (chunk_day > max_day):
                         data_blob.extend(chunk.to_dict('records'))
                 # Add to data blob if there's no day column (e.g. metadata CSVs)
                 else:
