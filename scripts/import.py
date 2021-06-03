@@ -49,12 +49,6 @@ def main():
             logger.info('document exists and is up to date %s', probe['path'])
             continue
         logger.info('document does not exist or is out of date %s', probe['path'])
-        # mark matching documents as unsynced (probably unnecessary)
-        logger.info('flipping sync to false for documents matching %s', probe['glob'])
-        db.unsync(probe['glob'])
-        # remove unsynced documents
-        logger.info('removing all unsynced documents matching %s', probe['glob'])
-        db.remove_unsynced(probe['glob'])
         # import the file
         logger.info('importing file %s', f)
         dppylib.import_file(db.db, probe)

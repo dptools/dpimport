@@ -4,6 +4,7 @@ import hashlib
 import logging
 import mimetypes as mt
 from . import patterns
+from dppylib import diff_files
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ def probe(path):
     :type path: str
     '''
     if not os.path.exists(path):
-        logger.debug('file not found %s', f)
+        logger.debug('file not found %s', path)
         return None
     dirname = os.path.dirname(path)
     basename = os.path.basename(path)
