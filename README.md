@@ -6,8 +6,8 @@ simple [`glob`](https://en.wikipedia.org/wiki/Glob_(programming)) expression.
 ## Table of contents
 1. [Installation](#installation)
 2. [Configuration](#configuration)
-   - [MongoDB](#mongodb)
 3. [Usage](#usage)
+4. [MongoDB](#mongodb)
 
 ## Installation
 Just use `pip`
@@ -21,14 +21,6 @@ DPimport requires a configuration file in YAML format, passed as a command
 line argument with `-c|--config`, for establishing a MongoDB database 
 connection. You will find an example configuration file in the `examples` 
 directory within this repository.
-
-### MongoDB
-
-This tool requires MongoDB to be running and accessible with the credentials you
-supply in the YAML config file.
-
-For tips on MongoDB as it is used in DPdash and DPimport, see 
-[the DPdash wiki](https://github.com/PREDICT-DPACC/dpdash/wiki/MongoDB-Tips).
 
 ## Usage
 The main command line tool is `import.py`. You can use this tool to import any
@@ -65,3 +57,12 @@ and so on.
 and so on, for as many levels deep as exist in the directory tree.
 
 </details>
+
+
+
+## MongoDB
+
+This tool requires MongoDB to be running and accessible with the credentials you
+supply in the `config.yml` file. For tips on MongoDB as it is used in DPdash and DPimport,
+see [the DPdash wiki](https://github.com/PREDICT-DPACC/dpdash/wiki/MongoDB-Tips).
+
