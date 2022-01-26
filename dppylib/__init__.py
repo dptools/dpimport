@@ -132,30 +132,13 @@ def insert_data(db, file_info):
         # Import data
         data_blob = []
         import_collection = db[file_info['collection']]
-        # Check for min and max day in collection
-        min_day = float('inf')
-        max_day = -1
-        min_day_found = import_collection.find_one({'day': {'$exists': True}}, sort=[('day', 1)], projection= {'day': 1})
-        if min_day_found is not None:
-            min_day = min_day_found['day']
-        max_day_found = import_collection.find_one({'day': {'$exists': True}}, sort=[('day', -1)], projection= {'day': 1})
-        if max_day_found is not None:
-            max_day = max_day_found['day']
         for chunk in reader.read_csv(file_info['path']):
             if len(chunk) > 0:
                 if file_info['role'] != 'metadata':
                     chunk_columns = sanitize_columns(chunk.columns.values.tolist())
                     chunk.columns = chunk_columns
                 chunk['path'] = file_info['path']
-                if 'day' in chunk: 
-                    chunk_day = chunk['day']
-                    # Add to data blob if there is no existing day range for this collection,
-                    # or if this day is not in the existing range
-                    # if min_day_found is None or max_day_found is None or (chunk_day < min_day) or (chunk_day > max_day):
-                    data_blob.extend(chunk.to_dict('records'))
-                # Add to data blob if there's no day column (e.g. metadata CSVs)
-                else:
-                    data_blob.extend(chunk.to_dict('records'))
+                data_blob.extend(chunk.to_dict('records'))
 
                 if len(data_blob) >= 100000:
                     import_collection.insert_many(data_blob, False)
