@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 requires = [
     'pyaml',
-    'pymongo',
+    'pymongo==3.11.4',
     'pandas'
 ]
 
