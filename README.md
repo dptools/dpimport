@@ -13,7 +13,7 @@ simple [`glob`](https://en.wikipedia.org/wiki/Glob_(programming)) expression.
 Just use `pip`
 
 ```bash
-pip install git+https://github.com/harvard-nrg/dpimport
+pip install https://github.com/AMP-SCZ/dpimport.git
 ```
 
 ## Configuration
