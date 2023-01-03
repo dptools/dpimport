@@ -88,7 +88,7 @@ def insert_data(db, file_info):
                     chunk_columns = sanitize_columns(chunk.columns.values.tolist())
                     chunk.columns = chunk_columns
                 chunk['path'] = file_info['path']
-                data_blob.extend(chunk.to_dict('records'))
+                data_blob.extend(chunk.round(4).to_dict('records'))
 
                 if len(data_blob) >= 100000:
                     import_collection.insert_many(data_blob, False)
