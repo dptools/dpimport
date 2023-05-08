@@ -28,7 +28,8 @@ class Database(object):
             ssl_cert_reqs=ssl.CERT_REQUIRED,
             ssl_certfile=self.config['ssl_certfile'],
             ssl_keyfile=self.config['ssl_keyfile'],
-            ssl_ca_certs=self.config['ssl_ca_certs']
+            ssl_ca_certs=self.config['ssl_ca_certs'],
+            serverSelectionTimeoutMS=300000
         )
         self.db = self.client[self.dbname]
         return self
