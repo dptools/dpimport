@@ -15,13 +15,43 @@ from dpimport.database import Database
 from pymongo import DeleteMany, UpdateMany
 from pymongo.errors import BulkWriteError
 
+from multiprocessing import Pool
+import signal
+
 logger = logging.getLogger(__name__)
+
+def RAISE(err):
+    raise err
+
+
+def _main(db1,f):
+    dirname = os.path.dirname(f)
+    basename = os.path.basename(f)
+    # probe for dpdash-compatibility and gather information
+    probe = dpimport.probe(f)
+    if not probe:
+        logger.debug('document is unknown %s', basename)
+        return
+
+    db=db1.connect()
+    # nothing to be done
+    if db.exists(probe):
+        logger.info('document exists and is up to date %s', probe['path'])
+        return
+    logger.info('document does not exist or is out of date %s', probe['path'])
+    # import the file
+    logger.info('importing file %s', f)
+    dppylib.import_file(db.db, probe)
+
+
 
 def main():
     parser = ap.ArgumentParser()
     parser.add_argument('-c', '--config')
     parser.add_argument('-d', '--dbname', default='dpdata')
     parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-n','--ncpu', type= int, default= 1,
+        help='number of processes/threads to use')
     parser.add_argument('expr')
     args = parser.parse_args()
 
@@ -32,31 +62,53 @@ def main():
 
     with open(os.path.expanduser(args.config), 'r') as fo:
         config = yaml.load(fo, Loader=yaml.SafeLoader)
+    
+    # this works just fine but raises pymongo-fork warning
+    # https://pymongo.readthedocs.io/en/stable/faq.html#is-pymongo-fork-safe
+    # global db
+    # db = Database(config, args.dbname).connect()
 
-    db = Database(config, args.dbname).connect()
+    # the idea to circumvent the above is to open connections within forks
+    db1 = Database(config, args.dbname)
+    
+    # this is the simplest pool
+    # pool= Pool(args.ncpu)
+    # for f in glob.glob(args.expr, recursive=True):
+    #    pool.apply_async(_main, (db,f))
+    # pool.close()
+    # pool.join()
 
-    # iterate over matching files on the filesystem
-    for f in glob.iglob(args.expr, recursive=True):
-        dirname = os.path.dirname(f)
-        basename = os.path.basename(f)
-        # probe for dpdash-compatibility and gather information
-        probe = dpimport.probe(f)
-        if not probe:
-            logger.debug('document is unknown %s', basename)
-            continue
-        # nothing to be done
-        if db.exists(probe):
-            logger.info('document exists and is up to date %s', probe['path'])
-            continue
-        logger.info('document does not exist or is out of date %s', probe['path'])
-        # import the file
-        logger.info('importing file %s', f)
-        dppylib.import_file(db.db, probe)
+    # but we also want Ctrl+C termination capability, error_callback,
+    # and just for loop for ncpu=1
+    files=glob.glob(args.expr, recursive=True)
 
+    if args.ncpu==1:
+
+        for f in files:
+            _main(db1,f)
+
+    elif args.ncpu>1:
+
+        sigint_handler= signal.signal(signal.SIGINT, signal.SIG_IGN)
+        pool= Pool(args.ncpu)
+        signal.signal(signal.SIGINT, sigint_handler)
+
+        try:
+            for f in files:
+                pool.apply_async(_main, (db1,f), error_callback= RAISE)
+        except KeyboardInterrupt:
+            pool.terminate()
+        else:
+            pool.close()
+        pool.join()
+
+
+    db=db1.connect()
     logger.info('cleaning metadata')
     lastday = get_lastday(db.db)
     if lastday:
         clean_metadata(db.db, lastday)
+
 
 def clean_metadata(db, max_days):
     studies = col.defaultdict()
