@@ -63,23 +63,8 @@ def main():
     with open(os.path.expanduser(args.config), 'r') as fo:
         config = yaml.load(fo, Loader=yaml.SafeLoader)
     
-    # this works just fine but raises pymongo-fork warning
-    # https://pymongo.readthedocs.io/en/stable/faq.html#is-pymongo-fork-safe
-    # global db
-    # db = Database(config, args.dbname).connect()
-
-    # the idea to circumvent the above is to open connections within forks
     db1 = Database(config, args.dbname)
     
-    # this is the simplest pool
-    # pool= Pool(args.ncpu)
-    # for f in glob.glob(args.expr, recursive=True):
-    #    pool.apply_async(_main, (db,f))
-    # pool.close()
-    # pool.join()
-
-    # but we also want Ctrl+C termination capability, error_callback,
-    # and just for loop for ncpu=1
     files=glob.glob(args.expr, recursive=True)
 
     if args.ncpu==1:
