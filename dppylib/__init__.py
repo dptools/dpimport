@@ -136,7 +136,6 @@ def insert_data(db, file_info):
         # https://github.com/AMP-SCZ/dpimport/blob/52a0b80e704b20297e2239597d7145db1ae7c7f8/tools/reader/__init__.py#L9
         # reader.read_csv() has specified chunksize=1
         # so each chunk is one row of the csv file at a time
-        # the above is the idea of lazy loading
         # https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#io-chunking
         for chunk in reader.read_csv(file_info['path']):
             if len(chunk) > 0:
