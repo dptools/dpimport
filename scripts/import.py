@@ -94,7 +94,6 @@ def main():
     if lastday:
         clean_metadata(db.db, lastday)
 
-
 def clean_metadata(db, max_days):
     studies = col.defaultdict()
     subjects = list()
