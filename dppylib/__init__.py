@@ -125,6 +125,7 @@ def insert_reference(collection, reference):
             ref_id = collection.insert_one(reference).inserted_id
         except:
             sleep(60)
+            logger.info('Retrying reference insertion of {FILE}'.format(FILE=reference['path']))
             ref_id = collection.insert_one(reference).inserted_id
         return ref_id
     except Exception as e:
@@ -157,6 +158,7 @@ def insert_data(db, file_info):
                         import_collection.insert_many(data_blob, False)
                     except:
                         sleep(60)
+                        logger.info('Retrying data insertion of {FILE}'.format(FILE=file_info['path']))
                         import_collection.insert_many(data_blob, False)
                     data_blob = []
                     
@@ -165,6 +167,7 @@ def insert_data(db, file_info):
                 import_collection.insert_many(data_blob, False)
             except:
                 sleep(60)
+                logger.info('Retrying data insertion of {FILE}'.format(FILE=file_info['path']))
                 import_collection.insert_many(data_blob, False)
         return 0
     except Exception as e:
