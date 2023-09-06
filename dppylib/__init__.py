@@ -9,6 +9,7 @@ from urllib.parse import quote
 
 from tools import database as dbtools
 from tools import reader
+from time import sleep
 
 TIME_UNITS = {
     'day' : 'days',
@@ -120,7 +121,11 @@ def log_success(ref_collection, ref_id):
 # Insert the reference doc, returns the inserted id
 def insert_reference(collection, reference):
     try:
-        ref_id = collection.insert_one(reference).inserted_id
+        try:
+            ref_id = collection.insert_one(reference).inserted_id
+        except:
+            sleep(60)
+            ref_id = collection.insert_one(reference).inserted_id
         return ref_id
     except Exception as e:
         logger.error(e)
@@ -148,11 +153,19 @@ def insert_data(db, file_info):
                 data_blob.extend(chunk.to_dict('records'))
 
                 if len(data_blob) >= 10:
-                    import_collection.insert_many(data_blob, False)
+                    try:
+                        import_collection.insert_many(data_blob, False)
+                    except:
+                        sleep(60)
+                        import_collection.insert_many(data_blob, False)
                     data_blob = []
                     
         if data_blob:
-            import_collection.insert_many(data_blob, False)
+            try:
+                import_collection.insert_many(data_blob, False)
+            except:
+                sleep(60)
+                import_collection.insert_many(data_blob, False)
         return 0
     except Exception as e:
         logger.error(e)
